@@ -16,43 +16,39 @@ class frequency
 {
   public:
     using unit = Unit;
-    frequency(double val) : count(val) {}
+    frequency(double val) : count_(val) {}
 
     template <typename R>
     frequency &operator=(const frequency<R> &f)
     {
-        double temp = f.get_hz();
-        this->count = (temp / unit::num) * unit::den;
+        double temp = (f.count() * R::num) / R::den;
+        this->count_ = (temp / unit::num) * unit::den;
         return *this;
     }
 
     template <typename T>
     frequency &operator+=(const frequency<T> &f)
     {
-        double temp = get_hz() + f.get_hz();
-        this->count = (temp / unit::num) * unit::den;
+        double temp = get_hz() + ((f.count() * T::num) / T::den);
+        this->count_ = (temp / unit::num) * unit::den;
         return *this;
     }
 
     template <typename G, typename R>
     friend typename std::common_type<frequency<G>, frequency<R>>::type operator+(const frequency<G> &f1, const frequency<R> &f2);
 
-    template <typename F>
-    friend std::ostream &operator<<(std::ostream &os, const frequency<F> &f);
-
-    double get_count() const
+    constexpr double count() const
     {
-        return count;
-    }
-
-    double get_hz(void) const
-    {
-        return (count * unit::num) / unit::den;
+        return count_;
     }
 
   private:
-    double count; // value in units of this type (5.5 MHz = 5.5)
-};    // FREQUENCY_H_
+    constexpr double get_hz(void) const
+    {
+        return (count_ * unit::num) / unit::den;
+    }
+    double count_;
+}; // FREQUENCY_H_
 
 template <typename G, typename R>
 typename std::common_type<frequency<G>, frequency<R>>::type operator+(const frequency<G> &f1, const frequency<R> &f2)
@@ -61,13 +57,6 @@ typename std::common_type<frequency<G>, frequency<R>>::type operator+(const freq
     double temp = f1.get_hz() + f2.get_hz();
     double val = (temp / common::num) * common::den;
     return frequency<common>(val);
-}
-
-template <typename F>
-std::ostream &operator<<(std::ostream &stream, const frequency<F> &f)
-{
-    stream << f.get_count() << " : " << f.get_hz();
-    return stream;
 }
 
 namespace std
