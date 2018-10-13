@@ -10,18 +10,20 @@ void test_something(void)
     std::cout << "a: " << a.count() << " Hz" << std::endl;
     std::cout << "b: " << b.count() << " kHz" << std::endl;
 
-    //b = a;
-    //std::cout << b << std::endl;
-
-
     auto c = a + b;
-    std::cout << "c: " << c.count() << " Hz" << std::endl;
+    assert(c.count() == 5005);
+
+    auto d = a + b + b + a;
+    assert(typeid(d) == typeid(frequency<Hz>));
+    assert(d.count() == 10010);
 
     a += b;
-    std::cout << "a: " << a.count() << " Hz" << std::endl;
+    assert(typeid(a) == typeid(frequency<Hz>));
+    assert(a.count() == 5005);
 
     b += a;
-    std::cout << "b: " << b.count() << " kHz" << std::endl;
+    assert(typeid(b) == typeid(frequency<kHz>));
+    assert(b.count() == 10.005);
 }
 
 int main(void)
