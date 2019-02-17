@@ -11,6 +11,7 @@ void test_something(void)
     std::cout << "b: " << b.count() << " kHz" << std::endl;
 
     auto c = a + b;
+    assert(typeid(c) == typeid(frequency<Hz>));
     assert(c.count() == 5005);
 
     auto d = a + b + b + a;
@@ -23,7 +24,16 @@ void test_something(void)
 
     b += a;
     assert(typeid(b) == typeid(frequency<kHz>));
+    std::cout << b.count() << std::endl;
     assert(b.count() == 10.005);
+
+    auto hello = 5.0_khz;
+    auto hello2 = 2_hz;
+    auto sum = hello + hello2;
+    std::cout << sum.count() << std::endl;
+
+    std::cout << hello.count() << std::endl;
+
 }
 
 int main(void)
